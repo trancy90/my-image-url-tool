@@ -2,61 +2,64 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>图片压缩上传工具 V2.0</title>
+    <title>图片工作站：上传 & 压缩下载</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 p-4 md:p-8">
-    <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+<body class="bg-slate-50 p-4 md:p-8 text-slate-800">
+    <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
         
-        <div class="p-6 border-b bg-white sticky top-0 z-10">
+        <div class="p-6 border-b bg-white sticky top-0 z-20">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        🖼️ 智能图片压缩转 URL
-                    </h1>
-                    <p class="text-xs text-gray-400 mt-1">支持批量压缩：优先保持清晰度，体积超标时自动缩放</p>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">⚙️ IMAGE WORKSTATION</h1>
+                    <p class="text-xs text-slate-400 mt-1 uppercase font-bold tracking-widest">Upload to Cloud or Compress for Download</p>
                 </div>
-                <div id="status" class="text-sm text-blue-500 font-medium bg-blue-50 px-3 py-1 rounded-full">等待指令</div>
+                <div id="status" class="text-sm font-bold px-4 py-2 rounded-lg transition-all shadow-sm bg-slate-100 text-slate-500">准备就绪</div>
             </div>
             
-            <div class="mt-4 flex items-center gap-4 p-4 bg-slate-50 rounded-lg border border-slate-100">
-                <span class="text-sm font-bold text-slate-700">压缩目标 (Max Size)：</span>
-                <label class="flex items-center gap-2 cursor-pointer group">
-                    <input type="radio" name="size-limit" value="1" checked class="w-4 h-4 text-blue-600">
-                    <span class="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">1 MB</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer group">
-                    <input type="radio" name="size-limit" value="2" class="w-4 h-4 text-blue-600">
-                    <span class="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">2 MB</span>
-                </label>
-                <div class="ml-auto text-[11px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100">
-                    💡 原图较小时不会触发压缩，确保原画品质
+            <div class="mt-6 p-4 bg-slate-900 rounded-xl flex flex-wrap items-center gap-8 text-white shadow-inner">
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-black text-slate-400 uppercase">处理模式:</span>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-blue-400 transition-colors">
+                        <input type="radio" name="size-limit" value="raw" checked class="w-4 h-4 accent-blue-500">
+                        <span class="text-sm font-bold">原图上传</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-blue-400 transition-colors">
+                        <input type="radio" name="size-limit" value="1" class="w-4 h-4 accent-blue-500">
+                        <span class="text-sm font-bold">压缩至 1MB</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-blue-400 transition-colors">
+                        <input type="radio" name="size-limit" value="2" class="w-4 h-4 accent-blue-500">
+                        <span class="text-sm font-bold">压缩至 2MB</span>
+                    </label>
                 </div>
             </div>
 
-            <div id="drop-area" class="mt-4 border-2 border-dashed border-gray-200 rounded-lg py-10 text-center cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all">
-                <p class="text-gray-500 text-sm">将多张图片拖到此处，或 <span class="text-blue-600 font-bold underline">点击上传</span></p>
+            <div id="drop-area" class="mt-4 border-2 border-dashed border-slate-200 rounded-xl py-12 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all group">
+                <p class="text-slate-400 group-hover:text-blue-600 font-medium text-lg">将图片拖入此处开始处理</p>
                 <input type="file" id="file-input" multiple accept="image/*" class="hidden">
             </div>
         </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
-                <thead class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider">
+                <thead class="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b">
                     <tr>
-                        <th class="px-6 py-4 font-bold border-b w-40">预览</th>
-                        <th class="px-6 py-4 font-bold border-b">文件名 & 状态</th>
-                        <th class="px-6 py-4 font-bold border-b">生成的 URL</th>
-                        <th class="px-6 py-4 font-bold border-b w-28 text-center">操作</th>
+                        <th class="px-6 py-4 w-40">预览</th>
+                        <th class="px-6 py-4">文件信息</th>
+                        <th class="px-6 py-4">云端链接 (Cloud URL)</th>
+                        <th class="px-6 py-4 w-48 text-right">本地操作</th>
                     </tr>
                 </thead>
-                <tbody id="table-body" class="divide-y divide-gray-100 italic-placeholder">
-                    </tbody>
+                <tbody id="table-body" class="divide-y divide-slate-100"></tbody>
             </table>
         </div>
-        <div id="empty-state" class="py-20 text-center">
-            <div class="text-gray-300 mb-2">暂无待处理图片</div>
-            <button onclick="document.getElementById('file-input').click()" class="text-blue-500 text-sm hover:underline">立即添加</button>
+        
+        <div id="empty-state" class="py-32 text-center">
+            <div class="inline-block p-6 bg-slate-50 rounded-full mb-4">
+                <span class="text-4xl">📥</span>
+            </div>
+            <p class="text-slate-400 font-medium">列表空空如也，等待添加图片</p>
         </div>
     </div>
 
@@ -67,7 +70,7 @@
         const status = document.getElementById('status');
         const emptyState = document.getElementById('empty-state');
 
-        const API_KEY = '你的_ImgBB_API_KEY'; // 👈 记得填入你的 Key
+        const API_KEY = '你的_ImgBB_API_KEY'; // 👈 填入你的 Key
 
         dropArea.onclick = () => fileInput.click();
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(name => {
@@ -78,26 +81,38 @@
 
         async function handleFiles(files) {
             if (files.length > 0) emptyState.classList.add('hidden');
-            const targetMB = document.querySelector('input[name="size-limit"]:checked').value;
+            const mode = document.querySelector('input[name="size-limit"]:checked').value;
 
             for (let file of files) {
                 const row = createRow(file);
                 tableBody.prepend(row);
 
                 try {
-                    status.innerText = `正在处理: ${file.name}`;
-                    
-                    // 1. 本地压缩处理
-                    const compressedBlob = await compressImage(file, targetMB);
-                    const finalFile = new File([compressedBlob], file.name, { type: 'image/jpeg' });
-                    
-                    // 更新 UI 上的实际大小
-                    const sizeText = row.querySelector('.file-size');
-                    sizeText.innerText = `压缩后: ${(finalFile.size / 1024 / 1024).toFixed(2)} MB`;
-                    sizeText.classList.add('text-green-600');
+                    let finalFile = file;
+                    const infoLabel = row.querySelector('.process-info');
+                    const downloadBtn = row.querySelector('.download-btn');
 
-                    // 2. 上传
-                    status.innerText = `正在上传: ${file.name}`;
+                    // 1. 处理压缩/下载逻辑
+                    if (mode === 'raw') {
+                        infoLabel.innerText = "✨ 原始画质";
+                    } else {
+                        infoLabel.innerText = "⏳ 正在压缩...";
+                        const compressedBlob = await compressImage(file, mode);
+                        finalFile = new File([compressedBlob], `compressed_${file.name}`, { type: 'image/jpeg' });
+                        infoLabel.innerText = `✅ 已压缩 (${(finalFile.size / 1024 / 1024).toFixed(2)}MB)`;
+                        infoLabel.className = "process-info text-[10px] text-green-600 font-bold mt-1";
+                    }
+
+                    // 激活下载按钮
+                    downloadBtn.onclick = () => downloadFile(finalFile);
+                    downloadBtn.disabled = false;
+                    downloadBtn.className = "download-btn bg-slate-800 text-white text-xs px-4 py-2 rounded-lg font-bold hover:bg-black transition-all";
+                    downloadBtn.innerText = "下载图片";
+
+                    // 2. 上传逻辑
+                    status.innerText = "正在同步云端...";
+                    status.className = "text-sm font-bold px-4 py-2 rounded-lg bg-blue-500 text-white animate-pulse";
+                    
                     const formData = new FormData();
                     formData.append('image', finalFile);
 
@@ -108,22 +123,20 @@
                     const data = await res.json();
                     if (data.success) {
                         finishRow(row, data.data.url);
+                    } else {
+                        row.querySelector('.url-input').value = "云端上传受限";
                     }
                 } catch (err) {
-                    row.querySelector('.url-input').value = "处理出错";
+                    console.error(err);
                 }
             }
-            status.innerText = "✨ 全部任务已完成";
+            status.innerText = "任务完成";
+            status.className = "text-sm font-bold px-4 py-2 rounded-lg bg-green-500 text-white";
         }
 
         async function compressImage(file, targetMB) {
-            const targetSizeBytes = targetMB * 1024 * 1024;
-            
-            // 如果原图已经小于目标，不进行任何处理直接返回
-            if (file.size <= targetSizeBytes) {
-                return file;
-            }
-
+            const targetBytes = targetMB * 1024 * 1024;
+            if (file.size <= targetBytes) return file;
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -132,36 +145,17 @@
                     img.src = e.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-
-                        // 初始缩放比例：如果图片非常巨大（比如 5000px+），先强制缩小
-                        const maxDimension = 3500; 
-                        if (width > maxDimension || height > maxDimension) {
-                            const ratio = Math.min(maxDimension / width, maxDimension / height);
-                            width *= ratio;
-                            height *= ratio;
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
+                        let w = img.width, h = img.height;
                         const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        // 循环调整质量和尺寸
-                        let quality = 0.95;
+                        let quality = 0.9;
                         const step = () => {
+                            canvas.width = w; canvas.height = h;
+                            ctx.drawImage(img, 0, 0, w, h);
                             canvas.toBlob((blob) => {
-                                if (blob.size <= targetSizeBytes || quality <= 0.2) {
-                                    resolve(blob);
-                                } else {
+                                if (blob.size <= targetBytes || quality <= 0.1) resolve(blob);
+                                else {
                                     quality -= 0.1;
-                                    // 如果质量降到 0.5 依然过大，就开始缩小像素尺寸
-                                    if (quality < 0.5) {
-                                        canvas.width *= 0.9;
-                                        canvas.height *= 0.9;
-                                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                    }
+                                    if (quality < 0.5) { w *= 0.9; h *= 0.9; }
                                     step();
                                 }
                             }, 'image/jpeg', quality);
@@ -174,25 +168,26 @@
 
         function createRow(file) {
             const tr = document.createElement('tr');
-            tr.className = "hover:bg-blue-50/30 transition-colors";
+            tr.className = "hover:bg-slate-50 transition-colors group";
             const localUrl = URL.createObjectURL(file);
             tr.innerHTML = `
-                <td class="px-6 py-4">
-                    <div class="w-32 h-32 flex items-center justify-center bg-gray-50 rounded-lg border overflow-hidden shadow-inner">
+                <td class="px-6 py-6">
+                    <div class="w-32 h-32 flex items-center justify-center bg-slate-100 rounded-xl border-2 border-white shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
                         <img src="${localUrl}" class="max-w-full max-h-full object-contain">
                     </div>
                 </td>
-                <td class="px-6 py-4">
-                    <p class="text-xs font-bold text-gray-700 truncate max-w-[150px] mb-1">${file.name}</p>
-                    <p class="text-[10px] text-gray-400">原始: ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                    <p class="file-size text-[10px] text-blue-500 font-bold mt-1 italic tracking-tight">准备中...</p>
+                <td class="px-6 py-6">
+                    <p class="text-sm font-black text-slate-800 truncate max-w-[150px] mb-1">${file.name}</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Size: ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                    <p class="process-info text-[10px] text-blue-500 font-black mt-2 tracking-tighter italic">WAITING...</p>
                 </td>
-                <td class="px-6 py-4">
-                    <input type="text" readonly value="处理中..." 
-                        class="url-input w-full text-sm py-2 px-3 border border-gray-200 rounded-md bg-gray-50 text-gray-400 font-mono focus:outline-none">
+                <td class="px-6 py-6">
+                    <input type="text" readonly value="PENDING..." 
+                        class="url-input w-full text-[11px] py-2.5 px-4 border border-slate-200 rounded-xl bg-slate-50 text-slate-400 font-mono focus:outline-none transition-all">
                 </td>
-                <td class="px-6 py-4 text-center">
-                    <button onclick="copyRowLink(this)" disabled class="copy-btn bg-gray-200 text-white text-xs px-4 py-2 rounded-md font-bold">等待</button>
+                <td class="px-6 py-6 text-right space-y-2">
+                    <button onclick="copyRowLink(this)" disabled class="copy-btn block ml-auto bg-slate-100 text-slate-400 text-[10px] px-4 py-2 rounded-lg font-black uppercase transition-all cursor-not-allowed">复制 URL</button>
+                    <button disabled class="download-btn block ml-auto bg-slate-100 text-slate-400 text-[10px] px-4 py-2 rounded-lg font-black uppercase transition-all cursor-not-allowed tracking-tighter">处理中</button>
                 </td>
             `;
             return tr;
@@ -202,25 +197,28 @@
             const input = row.querySelector('.url-input');
             const btn = row.querySelector('.copy-btn');
             input.value = url;
-            input.classList.replace('text-gray-400', 'text-blue-600');
-            input.classList.replace('bg-gray-50', 'bg-white');
-            input.onclick = function() { this.select(); };
+            input.className = "url-input w-full text-[11px] py-2.5 px-4 border border-blue-200 rounded-xl bg-white text-blue-600 font-bold shadow-sm";
             btn.disabled = false;
-            btn.innerText = "复制 URL";
-            btn.classList.replace('bg-gray-200', 'bg-blue-600');
-            btn.classList.add('hover:bg-blue-700', 'shadow-sm');
+            btn.className = "copy-btn block ml-auto bg-blue-600 text-white text-[10px] px-4 py-2 rounded-lg font-black uppercase hover:bg-blue-700 shadow-lg cursor-pointer";
             row.setAttribute('data-url', url);
+        }
+
+        function downloadFile(file) {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(file);
+            a.download = file.name;
+            a.click();
         }
 
         function copyRowLink(btn) {
             const url = btn.closest('tr').getAttribute('data-url');
             navigator.clipboard.writeText(url).then(() => {
-                const oldText = btn.innerText;
-                btn.innerText = "已复制 ✅";
-                btn.classList.replace('bg-blue-600', 'bg-green-500');
+                const old = btn.innerText;
+                btn.innerText = "COPIED!";
+                btn.className = btn.className.replace('bg-blue-600', 'bg-green-500');
                 setTimeout(() => {
-                    btn.innerText = oldText;
-                    btn.classList.replace('bg-green-500', 'bg-blue-600');
+                    btn.innerText = old;
+                    btn.className = btn.className.replace('bg-green-500', 'bg-blue-600');
                 }, 1500);
             });
         }
