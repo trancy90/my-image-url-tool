@@ -94,19 +94,21 @@
             const localUrl = URL.createObjectURL(file);
             
             tr.innerHTML = `
-                <td class="px-6 py-3">
-                    <img src="${localUrl}" class="w-14 h-14 object-cover rounded shadow-sm border">
+                <td class="px-6 py-4">
+                    <div class="w-32 h-32 flex items-center justify-center bg-gray-50 rounded border overflow-hidden">
+                        <img src="${localUrl}" class="max-w-full max-h-full object-contain shadow-sm">
+                    </div>
                 </td>
-                <td class="px-6 py-3 text-xs text-gray-600 truncate max-w-[150px]">
+                <td class="px-6 py-4 text-xs text-gray-600 truncate max-w-[120px]">
                     ${file.name}
                 </td>
-                <td class="px-6 py-3">
+                <td class="px-6 py-4">
                     <input type="text" readonly value="上传中..." 
-                        class="url-input w-full text-sm py-1.5 px-3 border rounded bg-gray-50 text-gray-400 focus:outline-none">
+                        class="url-input w-full text-sm py-2 px-3 border rounded bg-gray-50 text-gray-400 focus:outline-none">
                 </td>
-                <td class="px-6 py-3 text-center">
+                <td class="px-6 py-4 text-center">
                     <button onclick="copyRowLink(this)" disabled
-                        class="copy-btn bg-gray-300 text-white text-xs px-3 py-1.5 rounded transition-all cursor-not-allowed">
+                        class="copy-btn bg-gray-300 text-white text-sm px-4 py-2 rounded transition-all cursor-not-allowed">
                         等待
                     </button>
                 </td>
