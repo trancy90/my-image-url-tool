@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>极简图片转URL工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #drop-area { border: 2px dashed #cbd5e1; transition: all 0.3s; }
+        #drop-area.active { border-color: #3b82f6; background: #eff6ff; }
+    </style>
+</head>
+<body class="bg-slate-50 p-8">
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
+        <h1 class="text-2xl font-bold mb-4 text-slate-800">📸 图片转 URL 工具</h1>
+        
+        <div id="drop-area" class="py-12 text-center rounded-lg cursor-pointer mb-6">
+            <p class="text-slate-500">将图片拖到这里，或 <span class="text-blue-500 font-semibold">点击上传</span></p>
+            <input type="file" id="file-input" multiple accept="image/*" class="hidden">
+        </div>
+
+        <div id="result-section" class="hidden">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="font-semibold text-slate-700">生成结果：</h2>
+                <button onclick="copyAll()" class="text-sm bg-slate-100 px-3 py-1 rounded hover:bg-slate-200">一键复制全部</button>
+            </div>
+            <textarea id="url-list" class="w-full h-48 p-3 border rounded-lg text-sm font-mono text-slate-600 bg-slate-50" readonly></textarea>
+        </div>
+
+        <div id="status" class="mt-4 text-sm text-blue-600"></div>
+    </div>
+
+    <script>
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('file-input');
+        const urlList = document.getElementById('url-list');
+        const resultSection = document.getElementById('result-section');
+        const status = document.getElementById('status');
+
+        // 绑定事件
+        dropArea.onclick = () => fileInput.click();
+        
+        dropArea.addEventListener('dragover', (e) => { e.preventDefault(); dropArea.classList.add('active'); });
+        dropArea.addEventListener('dragleave', () => dropArea.classList.remove('active'));
+        
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('active');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.onchange = () => handleFiles(fileInput.files);
+
+        async function handleFiles(files) {
+            resultSection.classList.remove('hidden');
+            status.innerText = `准备上传 ${files.length} 张图片...`;
+            
+            for (let file of files) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    // 使用 Telegraph 的节点作为演示（注：某些地区可能需代理）
+                    // 实际商用建议换成自己的 ImgBB 或 OSS 接口
+                    const response = await fetch('https://telegra.ph/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    if (data[0] && data[0].src) {
+                        const fullUrl = `https://telegra.ph${data[0].src}`;
+                        urlList.value += fullUrl + '\n';
+                        status.innerText = `上传成功: ${file.name}`;
+                    }
+                } catch (err) {
+                    status.innerText = `上传失败: ${file.name}`;
+                }
+            }
+            status.innerText = "全部处理完成！";
+        }
+
+        function copyAll() {
+            urlList.select();
+            document.execCommand('copy');
+            alert('已复制到剪贴板');
+        }
+    </script>
+</body>
+</html>
